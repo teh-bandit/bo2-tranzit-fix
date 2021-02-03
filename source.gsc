@@ -7,18 +7,20 @@ init()
 {
     level thread onPlayerConnect();
     
-    level.perk_purchase_limit = 9;
+    // Denizens
+    setDvar( "scr_screecher_ignore_player", 1 );
     
+    // Portals
+    level thread teleporters();
+
+    // Doors
+    level.power_local_doors_globally = true;
+    
+    // Jet Gun
     level.explode_overheated_jetgun = false;
     level.unbuild_overheated_jetgun = false;
     level.take_overheated_jetgun = true;
     set_zombie_var( "jetgun_grind_range", 1000 );
-	
-    level.power_local_doors_globally = true;
-	
-    teleporters = GetStructArray( "screecher_escape", "targetname" );
-    foreach(spot in teleporters)
-        spot thread setupTeleporters();
 }
 
 onPlayerConnect()
@@ -38,12 +40,22 @@ onPlayerSpawned()
     {
         self waittill("spawned_player");
         
+        // Message
         self iprintln("^1Bandit's TranZit Fix");
-		
+        
+        // Players
         self setperk( "specialty_unlimitedsprint" );
-		
-        setDvar( "scr_screecher_ignore_player", 1 );
+        level.perk_purchase_limit = 9;
     }
+}
+
+teleporters()
+{
+    teleporters = GetStructArray( "screecher_escape", "targetname" );
+    foreach(spot in teleporters)
+    {
+        spot thread setupTeleporters();
+    }    
 }
 
 setupTeleporters()
